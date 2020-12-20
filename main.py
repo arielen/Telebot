@@ -1,13 +1,19 @@
+from telebot import types
 import telebot
 import day
 
 # ТОКЕН БОТА, МОЖНО ПОЛУЧИТЬУ @FATHER_BOT
-bot = telebot.TeleBot("TOKEN", parse_mode=None)
+bot = telebot.TeleBot("1479000661:AAHBFbKibQvqj6tErAcF2eNBl9lUIuO_zwo", parse_mode=None)
 
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
     bot.reply_to(message, "Доброго времени суток, что именно вам нужно?")
+
+
+@bot.message_handler(commands=['время', 'пары'])
+def send_schedule(message):
+    bot.reply_to(message, day.time)
 
 
 @bot.message_handler(commands=['понедельник'])
