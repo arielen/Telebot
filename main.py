@@ -1,54 +1,45 @@
-from telebot import types
 import telebot
 import day
 
-# ТОКЕН БОТА, МОЖНО ПОЛУЧИТЬУ @FATHER_BOT
-bot = telebot.TeleBot("1479000661:AAHBFbKibQvqj6tErAcF2eNBl9lUIuO_zwo", parse_mode=None)
+token = '1479000661:AAGVKWZfff6Bk-Hy_lWqxbYjbH6ZY_2UAmw'
+bot = telebot.TeleBot(token)
+
+keyboard = telebot.types.ReplyKeyboardMarkup(True)
+keyboard.row('Понедельник', 'Вторник', 'Среда')
+keyboard.row('Четверг', 'Пятница', 'Суббота')
+keyboard.row('Расписание пар')
 
 
-@bot.message_handler(commands=['start', 'help'])
-def send_welcome(message):
-    bot.reply_to(message, "Доброго времени суток, что именно вам нужно?")
+def send(id, text):
+    bot.send_message(id, text, reply_markup=keyboard)
 
 
-@bot.message_handler(commands=['время', 'пары'])
-def send_schedule(message):
-    bot.reply_to(message, day.time)
+@bot.message_handler(commands=['start'])
+def answer(message):
+    send(message.chat.id, 'Привет')
 
 
-@bot.message_handler(commands=['понедельник'])
-def send_schedule(message):
-    bot.reply_to(message, day.monday + '\n Пожалуй один из самых тяжелых дней! <3')
+@bot.message_handler(content_types=['text'])
+def main(message):
+    id = message.chat.id
+    msg = message.text
+
+    if msg.lower() == 'понедельник':
+        send(id, day.monday)
+    elif msg.lower() == 'вторник':
+        send(id, day.tuesday)
+    elif msg.lower() == 'среда':
+        send(id, day.wednesday)
+    elif msg.lower() == 'четверг':
+        send(id, day.thursday)
+    elif msg.lower() == 'пятница':
+        send(id, day.friday)
+    elif msg.lower() == 'суббота':
+        send(id, day.saturday)
+    elif msg.lower() == 'расписание пар':
+        send(id, day.time)
+    else:
+        send(id, 'Я не понимаю')
 
 
-@bot.message_handler(commands=['вторник'])
-def send_schedule(message):
-    bot.reply_to(message, day.tuesday)
-
-
-@bot.message_handler(commands=['среда'])
-def send_schedule(message):
-    bot.reply_to(message, day.wednesday)
-
-
-@bot.message_handler(commands=['четверг'])
-def send_schedule(message):
-    bot.reply_to(message, day.thursday)
-
-
-@bot.message_handler(commands=['пятница'])
-def send_schedule(message):
-    bot.reply_to(message, day.friday)
-
-
-@bot.message_handler(commands=['суббота'])
-def send_schedule(message):
-    bot.reply_to(message, day.friday)
-
-
-@bot.message_handler(func=lambda m: True)
-def echo_all(message):
-    bot.reply_to(message, message.text)
-
-
-bot.polling()
+bot.polling(none_stop=True)
